@@ -49,7 +49,7 @@ function AddonSection({
       if (!res.ok) throw new Error();
       setItems(await res.json());
     } catch {
-      toast.error(`${label} konnten nicht geladen werden`);
+      toast.error(`${label} could not be loaded`);
     } finally {
       setLoading(false);
     }
@@ -90,10 +90,10 @@ function AddonSection({
         xhr.send(formData);
       });
 
-      toast.success(`${file.name} hochgeladen`);
+      toast.success(`${file.name} uploaded`);
       fetchItems();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Upload fehlgeschlagen");
+      toast.error(err instanceof Error ? err.message : "Upload failed");
     } finally {
       setUploadProgress(null);
     }
@@ -107,10 +107,10 @@ function AddonSection({
           { method: "DELETE" },
         );
         if (!res.ok) throw new Error();
-        toast.success("Gelöscht");
+        toast.success("Deleted");
         fetchItems();
       } catch {
-        toast.error("Fehler beim Löschen");
+        toast.error("Failed to delete");
       }
     });
   }
@@ -127,10 +127,10 @@ function AddonSection({
           },
         );
         if (!res.ok) throw new Error();
-        toast.success(enabled ? "Aktiviert" : "Deaktiviert");
+        toast.success(enabled ? "Enabled" : "Disabled");
         fetchItems();
       } catch {
-        toast.error("Fehler beim Umschalten");
+        toast.error("Failed to toggle");
       }
     });
   }
@@ -150,7 +150,7 @@ function AddonSection({
               ) : (
                 <Upload className="mr-1.5 h-3.5 w-3.5" />
               )}
-              {isUploading ? `${uploadProgress}%` : "Hochladen"}
+              {isUploading ? `${uploadProgress}%` : "Upload"}
             </span>
           </Button>
         </label>
@@ -165,9 +165,9 @@ function AddonSection({
       )}
       <CardContent>
         {loading ? (
-          <p className="text-sm text-zinc-500">Lade…</p>
+          <p className="text-sm text-zinc-500">Loading…</p>
         ) : items.length === 0 ? (
-          <p className="text-sm text-zinc-500">Keine {label} installiert</p>
+          <p className="text-sm text-zinc-500">No {label} installed</p>
         ) : (
           <ul className="divide-y divide-zinc-100 dark:divide-zinc-800">
             {items.map((item) => (
@@ -193,7 +193,7 @@ function AddonSection({
                       size="icon"
                       disabled={isPending}
                       onClick={() => handleToggle(item.filename, !item.enabled)}
-                      title={item.enabled ? "Deaktivieren" : "Aktivieren"}
+                      title={item.enabled ? "Disable" : "Enable"}
                     >
                       {item.enabled ? (
                         <ToggleRight className="h-4 w-4 text-emerald-500" />
@@ -259,9 +259,9 @@ export function ServerAddonsTab({
       />
       {!supportsMods && !supportsPlugins && (
         <p className="col-span-full text-sm text-zinc-500">
-          Mods und Plugins sind für{" "}
+          Mods and plugins are not available for{" "}
           <span className="font-medium capitalize">{modLoader ?? "Vanilla"}</span>-Server nicht
-          verfügbar. Nur Datapacks werden unterstützt.
+          available. Only datapacks are supported.
         </p>
       )}
     </div>

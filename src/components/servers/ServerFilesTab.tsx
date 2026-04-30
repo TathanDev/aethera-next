@@ -93,7 +93,7 @@ export function ServerFilesTab({ serverId }: { serverId: string }) {
       if (!res.ok) throw new Error();
       setTree(await res.json());
     } catch {
-      toast.error("Dateien konnten nicht geladen werden");
+      toast.error("Files could not be loaded");
     } finally {
       setLoading(false);
     }
@@ -107,7 +107,7 @@ export function ServerFilesTab({ serverId }: { serverId: string }) {
       const { content } = await res.json();
       setFileContent(content);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Datei konnte nicht gelesen werden");
+      toast.error(err instanceof Error ? err.message : "File could not be read");
       setFileContent("");
     }
   }
@@ -122,9 +122,9 @@ export function ServerFilesTab({ serverId }: { serverId: string }) {
           body: JSON.stringify({ content: fileContent }),
         });
         if (!res.ok) throw new Error((await res.json()).error);
-        toast.success("Datei gespeichert");
+        toast.success("File saved");
       } catch (err) {
-        toast.error(err instanceof Error ? err.message : "Fehler beim Speichern");
+        toast.error(err instanceof Error ? err.message : "Failed to save");
       }
     });
   }
@@ -138,14 +138,14 @@ export function ServerFilesTab({ serverId }: { serverId: string }) {
         const data = await res.json().catch(() => ({}));
         throw new Error(data.error ?? `HTTP ${res.status}`);
       }
-      toast.success("Gelöscht");
+      toast.success("Deleted");
       if (selectedFile === filepath) {
         setSelectedFile(null);
         setFileContent("");
       }
       fetchTree();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Fehler beim Löschen");
+      toast.error(err instanceof Error ? err.message : "Failed to delete");
     }
   }
 
@@ -167,14 +167,14 @@ export function ServerFilesTab({ serverId }: { serverId: string }) {
         const data = await res.json().catch(() => ({}));
         throw new Error(data.error ?? `HTTP ${res.status}`);
       }
-      toast.success("Verschoben");
+      toast.success("Moved");
       if (selectedFile === from) {
         setSelectedFile(null);
         setFileContent("");
       }
       fetchTree();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Fehler beim Verschieben");
+      toast.error(err instanceof Error ? err.message : "Failed to move");
     }
   }
 
@@ -225,10 +225,10 @@ export function ServerFilesTab({ serverId }: { serverId: string }) {
     });
     try {
       await Promise.all(uploads);
-      toast.success(count === 1 ? "Hochgeladen" : `${count} Dateien hochgeladen`);
+      toast.success(count === 1 ? "Uploaded" : `${count} files uploaded`);
       fetchTree();
     } catch (err) {
-      toast.error(`Upload fehlgeschlagen: ${err instanceof Error ? err.message : ""}`);
+      toast.error(`Upload failed: ${err instanceof Error ? err.message : ""}`);
     }
   }
 
@@ -252,21 +252,21 @@ export function ServerFilesTab({ serverId }: { serverId: string }) {
   }
 
   if (loading) {
-    return <p className="text-sm text-zinc-500">Lade Dateien…</p>;
+    return <p className="text-sm text-zinc-500">Loading files…</p>;
   }
 
   const dialogTitle =
     pendingAction?.type === "delete"
-      ? "Löschen bestätigen"
-      : "Verschieben bestätigen";
+      ? "Confirm delete"
+      : "Confirm move";
 
   const dialogDescription =
     pendingAction?.type === "delete"
       ? pendingAction.isDirectory
-        ? `Möchtest du den Ordner "${pendingAction.path}" und seinen gesamten Inhalt unwiderruflich löschen?`
-        : `Möchtest du "${pendingAction.path}" wirklich löschen? Dies kann nicht rückgängig gemacht werden.`
+        ? `Do you want to permanently delete the folder "${pendingAction.path}" and all of its contents?`
+        : `Do you really want to delete "${pendingAction.path}"? This cannot be undone.`
       : pendingAction?.type === "move"
-        ? `Möchtest du "${pendingAction.from}" nach "${pendingAction.to}" verschieben?`
+        ? `Do you want to move "${pendingAction.from}" to "${pendingAction.to}"?`
         : "";
 
   return (
@@ -283,14 +283,14 @@ export function ServerFilesTab({ serverId }: { serverId: string }) {
           </DialogHeader>
           <DialogFooter>
             <Button variant="outline" onClick={() => setPendingAction(null)} disabled={confirming}>
-              Abbrechen
+              Cancel
             </Button>
             <Button
               variant={pendingAction?.type === "delete" ? "destructive" : "default"}
               onClick={handleConfirm}
               disabled={confirming}
             >
-              {confirming ? "…" : pendingAction?.type === "delete" ? "Löschen" : "Verschieben"}
+              {confirming ? "…" : pendingAction?.type === "delete" ? "Delete" : "Move"}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -320,8 +320,8 @@ export function ServerFilesTab({ serverId }: { serverId: string }) {
         }}
       >
         <div className="flex items-center justify-between border-b border-zinc-200 p-2 dark:border-zinc-800">
-          <span className="text-xs font-medium text-zinc-500">Dateien</span>
-          <label title="In Root hochladen">
+          <span className="text-xs font-medium text-zinc-500">Files</span>
+          <label title="Upload to root">
             <input
               type="file"
               multiple
@@ -343,7 +343,7 @@ export function ServerFilesTab({ serverId }: { serverId: string }) {
             <Input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Suchen…"
+              placeholder="Search…"
               className="h-7 pl-7 pr-6 text-xs"
             />
             {search && (
@@ -361,7 +361,7 @@ export function ServerFilesTab({ serverId }: { serverId: string }) {
           {searchResults ? (
             /* ── Search results (flat list) ── */
             searchResults.length === 0 ? (
-              <p className="px-2 py-4 text-center text-xs text-zinc-400">Keine Ergebnisse</p>
+              <p className="px-2 py-4 text-center text-xs text-zinc-400">No results</p>
             ) : (
               searchResults.map((node) => (
                 <SearchResultRow
@@ -380,11 +380,11 @@ export function ServerFilesTab({ serverId }: { serverId: string }) {
             <>
               {dragOverPath === "" && (
                 <div className="pointer-events-none mb-1 rounded border-2 border-dashed border-blue-400 px-2 py-2 text-center text-xs text-blue-400">
-                  Hier ablegen
+                  Drop here
                 </div>
               )}
               {tree.length === 0 && dragOverPath !== "" && (
-                <p className="px-2 py-4 text-center text-xs text-zinc-400">Keine Dateien</p>
+                <p className="px-2 py-4 text-center text-xs text-zinc-400">No files</p>
               )}
               {tree.map((node) => (
                 <TreeNode
@@ -415,7 +415,7 @@ export function ServerFilesTab({ serverId }: { serverId: string }) {
                 {selectedFile}
               </span>
               <Button size="sm" onClick={handleSave} disabled={isPending}>
-                {isPending ? "Speichere…" : "Speichern"}
+                {isPending ? "Saving…" : "Save"}
               </Button>
             </div>
             <textarea
@@ -427,7 +427,7 @@ export function ServerFilesTab({ serverId }: { serverId: string }) {
           </>
         ) : (
           <div className="flex flex-1 items-center justify-center text-sm text-zinc-500">
-            Datei auswählen
+            Select a file
           </div>
         )}
       </div>
@@ -496,7 +496,7 @@ function SearchResultRow({
       <ContextMenuContent>
         <ContextMenuItem onClick={() => onDownload(node.path)}>
           <Download />
-          {node.isDirectory ? "Als ZIP herunterladen" : "Herunterladen"}
+          {node.isDirectory ? "Download as ZIP" : "Download"}
         </ContextMenuItem>
         <ContextMenuSeparator />
         <ContextMenuItem
@@ -504,7 +504,7 @@ function SearchResultRow({
           onClick={() => onDelete(node.path, node.isDirectory)}
         >
           <Trash2 />
-          Löschen
+          Delete
         </ContextMenuItem>
       </ContextMenuContent>
     </ContextMenu>
@@ -579,7 +579,7 @@ function TreeNode({
                 )}
                 <span className="truncate text-zinc-700 dark:text-zinc-300">{node.name}</span>
                 {isDragTarget && (
-                  <span className="ml-auto shrink-0 text-xs text-blue-400">Ablegen</span>
+                  <span className="ml-auto shrink-0 text-xs text-blue-400">Drop</span>
                 )}
               </button>
               <button
@@ -610,13 +610,13 @@ function TreeNode({
         <ContextMenuContent>
           <ContextMenuItem onClick={() => onDownload(node.path)}>
             <Download />
-            Als ZIP herunterladen
+            Download as ZIP
           </ContextMenuItem>
           <ContextMenuSeparator />
           {/* Custom label-based item so the file picker opens correctly */}
           <label className="flex w-full cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800">
             <Upload className="h-4 w-4 shrink-0" />
-            Hier hochladen
+            Upload here
             <input
               type="file"
               multiple
@@ -630,7 +630,7 @@ function TreeNode({
             onClick={() => onDelete(node.path, true)}
           >
             <Trash2 />
-            Löschen
+            Delete
           </ContextMenuItem>
         </ContextMenuContent>
       </ContextMenu>
@@ -668,7 +668,7 @@ function TreeNode({
       <ContextMenuContent>
         <ContextMenuItem onClick={() => onDownload(node.path)}>
           <Download />
-          Herunterladen
+          Download
         </ContextMenuItem>
         <ContextMenuSeparator />
         <ContextMenuItem
@@ -676,7 +676,7 @@ function TreeNode({
           onClick={() => onDelete(node.path, false)}
         >
           <Trash2 />
-          Löschen
+          Delete
         </ContextMenuItem>
       </ContextMenuContent>
     </ContextMenu>

@@ -20,8 +20,8 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 
 const COMPONENT_META = [
-  { id: "world" as const, label: "Welten", icon: Globe },
-  { id: "config" as const, label: "Konfiguration", icon: FileText },
+  { id: "world" as const, label: "World", icon: Globe },
+  { id: "config" as const, label: "Config", icon: FileText },
   { id: "mods" as const, label: "Mods", icon: Package },
   { id: "plugins" as const, label: "Plugins", icon: Puzzle },
   { id: "datapacks" as const, label: "Datapacks", icon: Database },
@@ -100,7 +100,7 @@ export function BackupSelector({
     return (
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <Label className="text-sm font-medium">Backup zum Laden</Label>
+          <Label className="text-sm font-medium">Backup to load</Label>
           <Button
             variant="ghost"
             size="sm"
@@ -110,7 +110,7 @@ export function BackupSelector({
             }}
           >
             <X className="mr-1 h-3 w-3" />
-            Entfernen
+            Remove
           </Button>
         </div>
 
@@ -123,7 +123,7 @@ export function BackupSelector({
           </div>
 
           <p className="text-xs text-zinc-500 mb-2">
-            Komponenten zum Laden auswählen:
+            Choose components to load:
           </p>
           <div className="grid grid-cols-2 gap-1.5">
             {COMPONENT_META.map((comp) => {
@@ -164,8 +164,8 @@ export function BackupSelector({
   if (mode === "none") {
     return (
       <div className="space-y-3">
-        <Label className="text-sm font-medium">
-          Von Backup laden (optional)
+          <Label className="text-sm font-medium">
+          Load from backup (optional)
         </Label>
         <div className="grid grid-cols-2 gap-2">
           <button
@@ -174,7 +174,7 @@ export function BackupSelector({
             className="flex flex-col items-center gap-2 rounded-lg border border-zinc-200 p-4 text-center transition-colors hover:border-zinc-400 hover:bg-zinc-50 dark:border-zinc-800 dark:hover:border-zinc-600 dark:hover:bg-zinc-900"
           >
             <HardDrive className="h-6 w-6 text-zinc-400" />
-            <span className="text-xs font-medium">Bestehendes Backup</span>
+            <span className="text-xs font-medium">Existing backup</span>
           </button>
           <a
             href="/verzeichnis/backups"
@@ -183,11 +183,11 @@ export function BackupSelector({
             className="flex flex-col items-center gap-2 rounded-lg border border-zinc-200 p-4 text-center transition-colors hover:border-zinc-400 hover:bg-zinc-50 dark:border-zinc-800 dark:hover:border-zinc-600 dark:hover:bg-zinc-900"
           >
             <ExternalLink className="h-6 w-6 text-zinc-400" />
-            <span className="text-xs font-medium">Backup importieren</span>
+            <span className="text-xs font-medium">Import backup</span>
           </a>
         </div>
         <p className="text-xs text-zinc-500">
-          Backup zuerst auf der Backup-Seite importieren, dann hier auswählen.
+          Import the backup on the backups page first, then select it here.
         </p>
       </div>
     );
@@ -204,9 +204,9 @@ export function BackupSelector({
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <Label className="text-sm font-medium">Backup auswählen</Label>
+        <Label className="text-sm font-medium">Select backup</Label>
         <Button variant="ghost" size="sm" onClick={() => setMode("none")}>
-          Zurück
+          Back
         </Button>
       </div>
 
@@ -214,7 +214,7 @@ export function BackupSelector({
         <div className="relative">
           <Search className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-zinc-400" />
           <Input
-            placeholder="Backup suchen…"
+            placeholder="Search backups…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="pl-8 h-9 text-sm"
@@ -226,13 +226,13 @@ export function BackupSelector({
         {loadingBackups ? (
           <div className="flex items-center justify-center py-6 text-zinc-500">
             <HardDrive className="h-4 w-4 mr-2 animate-pulse" />
-            <span className="text-xs">Lade Backups...</span>
+            <span className="text-xs">Loading backups...</span>
           </div>
         ) : filtered.length === 0 ? (
           <div className="text-center py-6">
             <HardDrive className="mx-auto h-6 w-6 text-zinc-300 mb-1" />
             <p className="text-xs text-zinc-500">
-              {backups.length === 0 ? "Keine Backups vorhanden" : "Keine Ergebnisse"}
+              {backups.length === 0 ? "No backups available" : "No results"}
             </p>
           </div>
         ) : (

@@ -27,7 +27,7 @@ export default function UploadPage() {
 
   const identifierError =
     identifier && !IDENTIFIER_RE.test(identifier)
-      ? "Nur Kleinbuchstaben, Zahlen und Bindestriche (z.B. my-world)"
+      ? "Only lowercase letters, numbers, and hyphens (e.g. my-world)"
       : null;
 
   async function handleSubmit(e: React.FormEvent) {
@@ -47,13 +47,13 @@ export default function UploadPage() {
 
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
-        throw new Error(body.error ?? "Upload fehlgeschlagen");
+        throw new Error(body.error ?? "Upload failed");
       }
 
-      toast.success("Datei erfolgreich hochgeladen");
+      toast.success("File uploaded successfully");
       router.push("/verzeichnis/dateien");
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Upload fehlgeschlagen");
+      toast.error(err instanceof Error ? err.message : "Upload failed");
     } finally {
       setUploading(false);
     }
@@ -70,14 +70,14 @@ export default function UploadPage() {
         <div>
           <h1 className="text-2xl font-bold">Upload</h1>
           <p className="text-sm text-zinc-500">
-            Dateien werden nach 48 Stunden automatisch gelöscht
+            Files are automatically deleted after 48 hours
           </p>
         </div>
       </div>
 
       <Card className="max-w-lg">
         <CardHeader>
-          <CardTitle className="text-base">Datei hochladen</CardTitle>
+          <CardTitle className="text-base">Upload file</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -95,14 +95,13 @@ export default function UploadPage() {
                 <p className="text-xs text-red-500">{identifierError}</p>
               )}
               <p className="text-xs text-zinc-500">
-                Eindeutiger Name zur Referenzierung der Datei (z.B. beim
-                Server-Deploy)
+                Unique name to reference the file (e.g. during server deploy)
               </p>
             </div>
 
             {/* File picker */}
             <div className="space-y-1">
-              <Label>Datei</Label>
+              <Label>File</Label>
               <div
                 className="cursor-pointer rounded-md border-2 border-dashed border-zinc-200 p-6 text-center transition-colors hover:border-zinc-400 dark:border-zinc-700 dark:hover:border-zinc-500"
                 onClick={() => inputRef.current?.click()}
@@ -121,7 +120,7 @@ export default function UploadPage() {
                   <div className="space-y-1">
                     <Upload className="mx-auto h-8 w-8 text-zinc-400" />
                     <p className="text-sm text-zinc-500">
-                      Klicken zum Auswählen
+                      Click to select
                     </p>
                   </div>
                 )}
@@ -140,7 +139,7 @@ export default function UploadPage() {
               className="w-full"
             >
               <Upload className="mr-1.5 h-4 w-4" />
-              {uploading ? "Wird hochgeladen…" : "Hochladen"}
+              {uploading ? "Uploading…" : "Upload"}
             </Button>
           </form>
         </CardContent>

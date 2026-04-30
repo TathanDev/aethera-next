@@ -34,7 +34,7 @@ export default async function BackupsPage() {
   const serialized = backups.map((b) => ({
     _id: b._id.toString(),
     serverId: b.serverId.toString(),
-    serverName: serverMap[b.serverId.toString()] ?? (b.strategy === "import" ? "Import" : "Unbekannt"),
+    serverName: serverMap[b.serverId.toString()] ?? (b.strategy === "import" ? "Import" : "Unknown"),
     name: b.name,
     filename: b.filename,
     size: b.size,
@@ -58,7 +58,7 @@ export default async function BackupsPage() {
         <div>
           <h1 className="text-2xl font-bold">Backups</h1>
           <p className="text-sm text-zinc-500">
-            Alle Server-Sicherungen — {serialized.length} Backups
+            All Minecraft server backups — {serialized.length} backups
           </p>
         </div>
       </div>
@@ -69,15 +69,14 @@ export default async function BackupsPage() {
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-zinc-100 dark:bg-zinc-800">
               <HardDrive className="h-5 w-5 text-zinc-500" />
             </div>
-            <CardTitle className="text-base">Keine Backups vorhanden</CardTitle>
+            <CardTitle className="text-base">No backups available</CardTitle>
             <CardDescription>
-              Navigiere zu einem Server und wechsle zum Backups-Tab um
-              Sicherungen zu erstellen.
+              Go to a Minecraft server and open the Backups tab to create backups.
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Button asChild variant="outline" size="sm">
-              <Link href="/projects">Zu den Projekten</Link>
+              <Link href="/projects">Go to projects</Link>
             </Button>
           </CardContent>
         </Card>

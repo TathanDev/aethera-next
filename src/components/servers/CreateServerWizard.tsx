@@ -62,12 +62,12 @@ import type { ResolvedPackInfo } from "@/lib/services/pack-resolution.service";
 // ---------------------------------------------------------------------------
 
 const STEPS = [
-  { title: "Server-Typ", icon: Server, description: "Servertyp wählen" },
-  { title: "Basis", icon: Settings, description: "Name und Identifier" },
-  { title: "Version", icon: Settings, description: "Version konfigurieren" },
-  { title: "Ressourcen", icon: Cpu, description: "RAM und Port festlegen" },
-  { title: "Einstellungen", icon: Globe, description: "Welt und Server konfigurieren" },
-  { title: "Bestätigung", icon: Rocket, description: "Zusammenfassung prüfen" },
+  { title: "Server Type", icon: Server, description: "Choose a server type" },
+  { title: "Base", icon: Settings, description: "Name and identifier" },
+  { title: "Version", icon: Settings, description: "Configure the version" },
+  { title: "Resources", icon: Cpu, description: "Set RAM and port" },
+  { title: "Settings", icon: Globe, description: "Configure world and server" },
+  { title: "Confirmation", icon: Rocket, description: "Review the summary" },
 ];
 
 // ---------------------------------------------------------------------------
@@ -76,22 +76,22 @@ const STEPS = [
 
 const stepSchemas = [
   // Step 0 — Server-Typ
-  z.object({ serverType: z.string().min(1, "Servertyp erforderlich") }),
+  z.object({ serverType: z.string().min(1, "Server type is required") }),
   // Step 1 — Basis
   z.object({
-    name: z.string().min(1, "Name erforderlich"),
+    name: z.string().min(1, "Name is required"),
     identifier: z
       .string()
-      .min(1, "Identifier erforderlich")
-      .max(40, "Maximal 40 Zeichen")
-      .regex(/^[a-z0-9-]+$/, "Nur Kleinbuchstaben, Zahlen und Bindestriche"),
+      .min(1, "Identifier is required")
+      .max(40, "Maximum 40 characters")
+      .regex(/^[a-z0-9-]+$/, "Only lowercase letters, numbers and hyphens"),
   }),
   // Step 2 — Version (optional for pack types)
   z.object({}),
   // Step 3 — Ressourcen
   z.object({
-    memory: z.number().min(512, "Mindestens 512 MB"),
-    port: z.number().min(1024, "Mindestens 1024").max(65535, "Maximal 65535"),
+    memory: z.number().min(512, "Minimum 512 MB"),
+    port: z.number().min(1024, "Minimum 1024").max(65535, "Maximum 65535"),
   }),
   z.object({}),
   z.object({}),
@@ -318,7 +318,7 @@ function StepIndicator({ current }: { current: number }) {
 }
 
 // ---------------------------------------------------------------------------
-// Step 0 — Server-Typ
+// Step 0 — Server type
 // ---------------------------------------------------------------------------
 
 function Step0({
@@ -387,13 +387,13 @@ function Step0({
       {typeConfig.isPack && (
         <div className="space-y-3 rounded-lg border border-zinc-200 p-4 dark:border-zinc-700">
           <p className="text-sm font-medium">
-            {state.serverType === "curseforge" ? "CurseForge-Modpack" : "Modrinth-Modpack"}
+            {state.serverType === "curseforge" ? "CurseForge Modpack" : "Modrinth Modpack"}
           </p>
 
           {state.serverType === "curseforge" && (
             <div className="space-y-2">
               <div className="space-y-1.5">
-                <Label htmlFor="w-cf-slug">Slug oder Projekt-ID</Label>
+                <Label htmlFor="w-cf-slug">Slug or project ID</Label>
                 <Input
                   id="w-cf-slug"
                   placeholder="all-the-mods-9"
@@ -402,7 +402,7 @@ function Step0({
                 />
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="w-cf-file">Datei-ID <span className="text-zinc-400 font-normal">(optional, für spez. Version)</span></Label>
+                <Label htmlFor="w-cf-file">File ID <span className="text-zinc-400 font-normal">(optional, for a specific version)</span></Label>
                 <Input
                   id="w-cf-file"
                   placeholder="12345678"
@@ -416,7 +416,7 @@ function Step0({
           {state.serverType === "modrinth" && (
             <div className="space-y-2">
               <div className="space-y-1.5">
-                <Label htmlFor="w-mr-id">Projekt-ID oder Slug</Label>
+                <Label htmlFor="w-mr-id">Project ID or slug</Label>
                 <Input
                   id="w-mr-id"
                   placeholder="fabulously-optimized"
@@ -425,7 +425,7 @@ function Step0({
                 />
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="w-mr-ver">Version-ID <span className="text-zinc-400 font-normal">(optional)</span></Label>
+                <Label htmlFor="w-mr-ver">Version ID <span className="text-zinc-400 font-normal">(optional)</span></Label>
                 <Input
                   id="w-mr-ver"
                   placeholder="IIJJKKLL"
@@ -434,7 +434,7 @@ function Step0({
                 />
               </div>
               <div className="space-y-1.5">
-                <Label>Oder .mrpack-Datei hochladen</Label>
+                <Label>Or upload a .mrpack file</Label>
                 <input
                   type="file"
                   accept=".mrpack"
@@ -455,14 +455,14 @@ function Step0({
                         (p) => dispatch({ type: "SET_UPLOAD_PROGRESS", progress: p }),
                       );
                       if (status < 200 || status >= 300) {
-                        let msg = "Upload fehlgeschlagen";
+                        let msg = "Upload failed";
                         try { msg = (JSON.parse(body) as { error?: string }).error ?? msg; } catch { /* noop */ }
                         dispatch({ type: "SET_ERRORS", errors: { pack: msg } });
                         return;
                       }
                       const result = JSON.parse(body) as { ok: boolean; uploadId?: string; data?: ResolvedPackInfo; error?: string };
                       if (!result.ok || !result.data) {
-                        dispatch({ type: "SET_ERRORS", errors: { pack: result.error ?? "Unbekannter Fehler" } });
+                        dispatch({ type: "SET_ERRORS", errors: { pack: result.error ?? "Unknown error" } });
                         return;
                       }
                       dispatch({ type: "SET_PACK_META", meta: result.data });
@@ -475,7 +475,7 @@ function Step0({
                         dispatch({ type: "SET_NAME", value: result.data.packName });
                       }
                     } catch (err) {
-                      dispatch({ type: "SET_ERRORS", errors: { pack: err instanceof Error ? err.message : "Upload fehlgeschlagen" } });
+                      dispatch({ type: "SET_ERRORS", errors: { pack: err instanceof Error ? err.message : "Upload failed" } });
                     } finally {
                       dispatch({ type: "SET_PACK_RESOLVING", value: false });
                       dispatch({ type: "SET_UPLOAD_PROGRESS", progress: null });
@@ -527,7 +527,7 @@ function Step0({
               ) : (
                 <Check className="mr-1.5 h-3.5 w-3.5" />
               )}
-              Pack auflösen
+              Resolve pack
             </Button>
           )}
         </div>
@@ -537,7 +537,7 @@ function Step0({
 }
 
 // ---------------------------------------------------------------------------
-// Step 1 — Basis
+// Step 1 — Base
 // ---------------------------------------------------------------------------
 
 function Step1({
@@ -550,10 +550,10 @@ function Step1({
   return (
     <div className="space-y-4">
       <div className="space-y-1.5">
-        <Label htmlFor="w-name">Server-Name</Label>
+        <Label htmlFor="w-name">Server name</Label>
         <Input
           id="w-name"
-          placeholder="Mein Minecraft Server"
+          placeholder="My Minecraft server"
           value={state.name}
           onChange={(e) => dispatch({ type: "SET_NAME", value: e.target.value })}
           autoFocus
@@ -567,7 +567,7 @@ function Step1({
         <Label htmlFor="w-identifier">Identifier</Label>
         <Input
           id="w-identifier"
-          placeholder="mein-server"
+          placeholder="my-server"
           className="font-mono"
           value={state.identifier}
           onChange={(e) =>
@@ -578,7 +578,7 @@ function Step1({
           <p className="text-xs text-red-500">{state.errors.identifier}</p>
         ) : (
           <p className="text-xs text-zinc-500">
-            Eindeutiger Name für Docker-Container und Dateisystem
+            Unique name for Docker containers and the file system
           </p>
         )}
       </div>
@@ -597,7 +597,7 @@ function Step1({
 // Step 1 — Version
 // ---------------------------------------------------------------------------
 
-// Step2 (renamed from old Step1)
+// Step 2 (renamed from old Step 1)
 function Step2Version({
   state,
   dispatch,
@@ -614,29 +614,29 @@ function Step2Version({
     <div className="space-y-4">
       {isPack && state.packMeta ? (
         <div className="rounded-md border border-emerald-200 bg-emerald-50 px-4 py-3 space-y-1 dark:border-emerald-800 dark:bg-emerald-950/40">
-          <p className="text-sm font-medium text-emerald-700 dark:text-emerald-400">Aufgelöstes Modpack</p>
+          <p className="text-sm font-medium text-emerald-700 dark:text-emerald-400">Resolved modpack</p>
           <p className="text-sm text-emerald-600 dark:text-emerald-500">
             Minecraft {state.packMeta.mcVersion} · {state.packMeta.loader}
             {state.packMeta.loaderVersion ? ` ${state.packMeta.loaderVersion}` : ""}
           </p>
-          <p className="text-xs text-zinc-500">Version wird automatisch aus dem Pack übernommen.</p>
+          <p className="text-xs text-zinc-500">Version is applied automatically from the pack.</p>
         </div>
       ) : (
         <div className="space-y-1.5">
-          <Label htmlFor="w-version">{isMinecraft ? "Minecraft-Version" : "Version"}</Label>
+          <Label htmlFor="w-version">{isMinecraft ? "Minecraft version" : "Version"}</Label>
           <Input
             id="w-version"
             placeholder="latest"
             value={state.version}
             onChange={(e) => dispatch({ type: "SET_FIELD", field: "version", value: e.target.value })}
           />
-          <p className="text-xs text-zinc-500">Leer lassen für die neueste Version</p>
+          <p className="text-xs text-zinc-500">Leave empty for the latest version</p>
         </div>
       )}
 
       {isMinecraft && (
         <div className="space-y-1.5">
-          <Label>Java-Version</Label>
+          <Label>Java version</Label>
           <div className="flex flex-wrap gap-2">
             {JAVA_VERSIONS.map((v) => (
               <button
@@ -656,8 +656,8 @@ function Step2Version({
           </div>
           <p className="text-xs text-zinc-500">
             {isPack && state.packMeta
-              ? `Automatisch erkannt aus MC ${state.packMeta.mcVersion}. Kann manuell überschrieben werden.`
-              : "Automatisch angepasst wenn eine Version eingetragen wird."}
+              ? `Automatically detected from MC ${state.packMeta.mcVersion}. Can be overridden manually.`
+              : "Automatically adjusted when a version is entered."}
           </p>
         </div>
       )}
@@ -669,7 +669,7 @@ function Step2Version({
             onClick={() => setJvmOpen((o) => !o)}
             className="flex w-full items-center justify-between px-3 py-2 text-sm font-medium text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
           >
-            <span>JVM Flags</span>
+            <span>JVM flags</span>
             <svg
               className={cn("h-4 w-4 transition-transform", jvmOpen && "rotate-180")}
               fill="none"
@@ -700,7 +700,7 @@ function Step2Version({
 }
 
 // ---------------------------------------------------------------------------
-// Step 2 — Ressourcen
+// Step 2 — Resources
 // ---------------------------------------------------------------------------
 
 function Step3Resources({
@@ -761,14 +761,14 @@ function Step3Resources({
                     <AlertCircle className="absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 cursor-default text-red-500" />
                   </TooltipTrigger>
                   <TooltipContent side="top">
-                    Dieser Port ist bereits belegt. Wähle einen anderen Port.
+                    This port is already in use. Choose another port.
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
             )}
           </div>
           {state.portStatus === "taken" && (
-            <p className="text-xs text-red-500">Port ist bereits belegt</p>
+            <p className="text-xs text-red-500">Port is already in use</p>
           )}
           {state.errors.port && (
             <p className="text-xs text-red-500">{state.errors.port}</p>
@@ -780,7 +780,7 @@ function Step3Resources({
 }
 
 // ---------------------------------------------------------------------------
-// Step 4 — Einstellungen (Welt & Server)
+// Step 4 — Settings (World & Server)
 // ---------------------------------------------------------------------------
 
 function Step4Settings({
@@ -801,19 +801,19 @@ function Step4Settings({
         <>
           {/* MOTD */}
           <div className="space-y-1.5">
-            <Label htmlFor="w-motd">Server-Beschreibung (MOTD)</Label>
+            <Label htmlFor="w-motd">Server description (MOTD)</Label>
             <Input
               id="w-motd"
               value={state.motd}
               onChange={(e) => dispatch({ type: "SET_FIELD", field: "motd", value: e.target.value })}
-              placeholder="A Aethera Server"
+              placeholder="A Aethera server"
             />
           </div>
 
           {/* maxPlayers + difficulty */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <Label htmlFor="w-maxplayers">Max. Spieler</Label>
+              <Label htmlFor="w-maxplayers">Max players</Label>
               <Input
                 id="w-maxplayers"
                 type="number"
@@ -826,7 +826,7 @@ function Step4Settings({
               />
             </div>
             <div className="space-y-1.5">
-              <Label>Schwierigkeitsgrad</Label>
+              <Label>Difficulty</Label>
               <Select
                 value={state.difficulty}
                 onValueChange={(v) =>
@@ -837,10 +837,10 @@ function Step4Settings({
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="peaceful">Friedlich</SelectItem>
-                  <SelectItem value="easy">Einfach</SelectItem>
+                  <SelectItem value="peaceful">Peaceful</SelectItem>
+                  <SelectItem value="easy">Easy</SelectItem>
                   <SelectItem value="normal">Normal</SelectItem>
-                  <SelectItem value="hard">Schwer</SelectItem>
+                  <SelectItem value="hard">Hard</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -855,8 +855,8 @@ function Step4Settings({
               }
             />
             <div>
-              <span className="text-sm font-medium">Whitelist aktivieren</span>
-              <p className="text-xs text-zinc-500">Nur eingeladene Spieler können beitreten</p>
+              <span className="text-sm font-medium">Enable whitelist</span>
+              <p className="text-xs text-zinc-500">Only invited players can join</p>
             </div>
           </label>
         </>
@@ -867,7 +867,7 @@ function Step4Settings({
         <div className="space-y-3">
           <div className="flex items-center gap-2">
             <Globe className="h-4 w-4 text-zinc-500" />
-            <Label className="text-sm font-semibold">Welt</Label>
+            <Label className="text-sm font-semibold">World</Label>
           </div>
 
           <div className="grid grid-cols-3 gap-2">
@@ -883,7 +883,7 @@ function Step4Settings({
                     : "border-zinc-200 bg-white text-zinc-700 hover:border-zinc-300 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:border-zinc-600",
                 )}
               >
-                {src === "generate" ? "Generieren" : src === "import" ? "Importieren" : "Backup"}
+                {src === "generate" ? "Generate" : src === "import" ? "Import" : "Backup"}
               </button>
             ))}
           </div>
@@ -893,7 +893,7 @@ function Step4Settings({
               <Label htmlFor="w-seed">Seed <span className="text-zinc-400 font-normal">(optional)</span></Label>
               <Input
                 id="w-seed"
-                placeholder="Zufällig"
+                placeholder="Random"
                 value={state.worldSeed}
                 onChange={(e) => dispatch({ type: "SET_FIELD", field: "worldSeed", value: e.target.value })}
               />
@@ -902,7 +902,7 @@ function Step4Settings({
 
           {state.worldSource === "import" && (
             <div className="space-y-1.5">
-              <Label>Welt-ZIP hochladen</Label>
+              <Label>Upload world ZIP</Label>
               <input
                 type="file"
                 accept=".zip"
@@ -912,7 +912,7 @@ function Step4Settings({
                 }
               />
               {state.worldImportFile && (
-                <p className="text-xs text-emerald-600">{state.worldImportFile.name} ausgewählt</p>
+                <p className="text-xs text-emerald-600">{state.worldImportFile.name} selected</p>
               )}
             </div>
           )}
@@ -929,14 +929,14 @@ function Step4Settings({
       )}
 
       {!isMinecraft && !showWorld && (
-        <p className="text-sm text-zinc-500">Keine zusätzlichen Einstellungen für diese Runtime verfügbar.</p>
+        <p className="text-sm text-zinc-500">No additional settings are available for this runtime.</p>
       )}
     </div>
   );
 }
 
 // ---------------------------------------------------------------------------
-// Step 5 — Bestätigung
+// Step 5 — Confirmation
 // ---------------------------------------------------------------------------
 
 function Step5Confirm({ state }: { state: WizardState }){
@@ -948,20 +948,20 @@ function Step5Confirm({ state }: { state: WizardState }){
 
   const worldDesc =
     state.worldSource === "generate"
-      ? state.worldSeed ? `Generiert (Seed: ${state.worldSeed})` : "Generiert (zufällig)"
+      ? state.worldSeed ? `Generated (Seed: ${state.worldSeed})` : "Generated (random)"
       : state.worldSource === "import"
-        ? state.worldImportFile ? `Import: ${state.worldImportFile.name}` : "Import (keine Datei)"
+        ? state.worldImportFile ? `Import: ${state.worldImportFile.name}` : "Import (no file)"
         : state.worldBackupSelection
           ? `Backup: ${state.worldBackupSelection.backupName}`
-          : "Backup (nicht gewählt)";
+          : "Backup (not selected)";
 
   const rows = [
     { label: "Name", value: state.name },
     { label: "Identifier", value: state.identifier },
-    { label: "Servertyp", value: typeConfig.label },
+    { label: "Server type", value: typeConfig.label },
     ...(state.packMeta
       ? [
-          { label: "MC-Version", value: state.packMeta.mcVersion },
+          { label: "MC version", value: state.packMeta.mcVersion },
           { label: "Loader", value: `${state.packMeta.loader}${state.packMeta.loaderVersion ? ` ${state.packMeta.loaderVersion}` : ""}` },
         ]
       : [{ label: "Version", value: state.version || "latest" }]),
@@ -969,13 +969,13 @@ function Step5Confirm({ state }: { state: WizardState }){
     { label: "Port", value: String(state.port) },
     ...(isMinecraft ? [
       { label: "MOTD", value: state.motd },
-      { label: "Max. Spieler", value: String(state.maxPlayers) },
-      { label: "Schwierigkeit", value: state.difficulty },
-      { label: "Whitelist", value: state.whitelist ? "Ja" : "Nein" },
+      { label: "Max players", value: String(state.maxPlayers) },
+      { label: "Difficulty", value: state.difficulty },
+      { label: "Whitelist", value: state.whitelist ? "Yes" : "No" },
     ] : []),
     ...(showWorldInfo ? [{ label: "Welt", value: worldDesc }] : []),
     ...(isMinecraft && state.jvmPresetId !== "minimal"
-      ? [{ label: "JVM Preset", value: JVM_FLAG_PRESETS.find((p) => p.id === state.jvmPresetId)?.label ?? state.jvmPresetId }]
+      ? [{ label: "JVM preset", value: JVM_FLAG_PRESETS.find((p) => p.id === state.jvmPresetId)?.label ?? state.jvmPresetId }]
       : []),
     ...(state.backupSelection
       ? [{ label: "Backup", value: `${state.backupSelection.backupName} (${state.backupSelection.components.join(", ")})` }]
@@ -1145,12 +1145,12 @@ export function CreateServerWizard({ projectKey, blueprintId, maxRam }: Props) {
             );
             if (!res.ok) {
               const data = await res.json().catch(() => ({}));
-              toast.error(`Backup-Wiederherstellung fehlgeschlagen: ${data.error || "Unbekannter Fehler"}`);
+              toast.error(`Backup restore failed: ${data.error || "Unknown error"}`);
             } else {
-              toast.success("Backup wiederhergestellt!");
+              toast.success("Backup restored!");
             }
           } catch {
-            toast.error("Backup-Wiederherstellung fehlgeschlagen");
+            toast.error("Backup restore failed");
           }
         }
 
@@ -1163,9 +1163,9 @@ export function CreateServerWizard({ projectKey, blueprintId, maxRam }: Props) {
               method: "POST",
               body: fd,
             });
-            toast.success("Welt hochgeladen!");
+            toast.success("World uploaded!");
           } catch {
-            toast.error("Welt-Upload fehlgeschlagen");
+            toast.error("World upload failed");
           }
         }
 
@@ -1181,19 +1181,19 @@ export function CreateServerWizard({ projectKey, blueprintId, maxRam }: Props) {
               },
             );
             if (!res.ok) {
-              toast.error("Welt-Backup konnte nicht wiederhergestellt werden");
+              toast.error("World backup could not be restored");
             } else {
-              toast.success("Welt aus Backup wiederhergestellt!");
+              toast.success("World restored from backup!");
             }
           } catch {
-            toast.error("Welt-Backup-Wiederherstellung fehlgeschlagen");
+            toast.error("World backup restore failed");
           }
         }
 
         toast.success("Server erstellt!");
         router.push(`/projects/${projectKey}/servers/${result.serverId}`);
       } catch (err) {
-        toast.error(err instanceof Error ? err.message : "Fehler beim Erstellen");
+        toast.error(err instanceof Error ? err.message : "Failed to create server");
         dispatch({ type: "SET_SUBMITTING", value: false });
       }
     });
@@ -1236,7 +1236,7 @@ export function CreateServerWizard({ projectKey, blueprintId, maxRam }: Props) {
                   dispatch({ type: "SET_FIELD", field: "autoStart", value: !!v })
                 }
               />
-              Server sofort starten
+              Start server immediately
             </label>
           </div>
         )}
@@ -1249,7 +1249,7 @@ export function CreateServerWizard({ projectKey, blueprintId, maxRam }: Props) {
             disabled={state.step === 0 || state.submitting || isPending}
           >
             <ChevronLeft className="mr-1.5 h-4 w-4" />
-            Zurück
+            Back
           </Button>
 
           {isLastStep ? (
@@ -1259,11 +1259,11 @@ export function CreateServerWizard({ projectKey, blueprintId, maxRam }: Props) {
               ) : (
                 <Rocket className="mr-1.5 h-4 w-4" />
               )}
-              {state.submitting || isPending ? "Erstelle…" : "Server erstellen"}
+              {state.submitting || isPending ? "Creating…" : "Create server"}
             </Button>
           ) : (
             <Button onClick={handleNext}>
-              Weiter
+              Next
               <ChevronRight className="ml-1.5 h-4 w-4" />
             </Button>
           )}

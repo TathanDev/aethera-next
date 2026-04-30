@@ -48,12 +48,12 @@ const MOD_LOADERS = [
 type ModLoader = (typeof MOD_LOADERS)[number];
 
 const settingsSchema = z.object({
-  name: z.string().min(1, "Name ist erforderlich").max(64, "Maximal 64 Zeichen"),
+  name: z.string().min(1, "Name is required").max(64, "Maximum 64 characters"),
   memory: z
     .number()
-    .min(512, "Mindestens 512 MB")
-    .max(65536, "Maximal 65536 MB"),
-  port: z.number().min(1024, "Mindestens 1024").max(65535, "Maximal 65535"),
+    .min(512, "Minimum 512 MB")
+    .max(65536, "Maximum 65536 MB"),
+  port: z.number().min(1024, "Minimum 1024").max(65535, "Maximum 65535"),
   version: z.string().optional(),
   modLoader: z.enum(MOD_LOADERS),
   javaArgs: z.string().optional(),
@@ -133,12 +133,12 @@ export function SettingsTab({ server, projectKey }: SettingsTabProps) {
       });
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
-        throw new Error(body.error ?? "Fehler beim Speichern");
+        throw new Error(body.error ?? "Failed to save");
       }
-      toast.success("Einstellungen gespeichert");
+      toast.success("Settings saved");
       router.refresh();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Fehler beim Speichern");
+      toast.error(err instanceof Error ? err.message : "Failed to save");
     } finally {
       setSaving(false);
     }
@@ -153,12 +153,12 @@ export function SettingsTab({ server, projectKey }: SettingsTabProps) {
       });
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
-        throw new Error(body.error ?? "Fehler beim Löschen");
+        throw new Error(body.error ?? "Failed to delete");
       }
-      toast.success("Server gelöscht");
+      toast.success("Server deleted");
       router.push(`/projects/${projectKey}`);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Fehler beim Löschen");
+      toast.error(err instanceof Error ? err.message : "Failed to delete");
       setDeleting(false);
     }
   }
@@ -168,12 +168,12 @@ export function SettingsTab({ server, projectKey }: SettingsTabProps) {
       {/* Hinweis wenn nicht editierbar */}
       {!editable && (
         <div className="rounded-md border border-amber-200 bg-amber-50 p-3 text-sm text-amber-700 dark:border-amber-900/50 dark:bg-amber-900/20 dark:text-amber-400">
-          Server muss gestoppt sein um Einstellungen zu bearbeiten.
+          Server must be stopped to edit settings.
         </div>
       )}
       {server.status === "error" && (
         <div className="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-900/50 dark:bg-red-900/20 dark:text-red-400">
-          Server befindet sich im Fehlerzustand. Einstellungen können bearbeitet und gespeichert werden — danach neu starten.
+          Server is in an error state. Settings can be edited and saved, then restart it.
         </div>
       )}
 
@@ -181,7 +181,7 @@ export function SettingsTab({ server, projectKey }: SettingsTabProps) {
       <Card>
         <form onSubmit={handleSubmit(onSave)}>
           <CardHeader>
-            <CardTitle className="text-base">Server-Konfiguration</CardTitle>
+            <CardTitle className="text-base">Server configuration</CardTitle>
           </CardHeader>
 
           <CardContent className="grid gap-4 sm:grid-cols-2">
@@ -235,7 +235,7 @@ export function SettingsTab({ server, projectKey }: SettingsTabProps) {
 
             {/* Java-Version */}
             <div className="space-y-1">
-              <Label>Java-Version</Label>
+              <Label>Java version</Label>
               <Select value={javaVersion} onValueChange={setJavaVersion} disabled={!editable}>
                 <SelectTrigger>
                   <SelectValue />
@@ -252,7 +252,7 @@ export function SettingsTab({ server, projectKey }: SettingsTabProps) {
 
             {/* ModLoader */}
             <div className="space-y-1">
-              <Label>Mod-Loader</Label>
+              <Label>Mod loader</Label>
               <Controller
                 name="modLoader"
                 control={control}
@@ -279,7 +279,7 @@ export function SettingsTab({ server, projectKey }: SettingsTabProps) {
 
             {/* Java Args */}
             <div className="space-y-1 sm:col-span-2">
-              <Label htmlFor="s-javaArgs">Java Argumente</Label>
+              <Label htmlFor="s-javaArgs">Java arguments</Label>
               <Input
                 id="s-javaArgs"
                 placeholder="-XX:+UseG1GC"
@@ -303,14 +303,14 @@ export function SettingsTab({ server, projectKey }: SettingsTabProps) {
                   />
                 )}
               />
-              <Label htmlFor="s-autoStart">Automatisch starten</Label>
+              <Label htmlFor="s-autoStart">Start automatically</Label>
             </div>
           </CardContent>
 
           <CardFooter>
             <Button type="submit" disabled={saving || !editable}>
               <Save className="mr-1.5 h-4 w-4" />
-              {saving ? "Speichere…" : "Speichern"}
+              {saving ? "Saving…" : "Save"}
             </Button>
           </CardFooter>
         </form>
@@ -321,11 +321,10 @@ export function SettingsTab({ server, projectKey }: SettingsTabProps) {
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base text-red-600 dark:text-red-400">
             <AlertTriangle className="h-4 w-4" />
-            Gefahrenzone
+            Danger zone
           </CardTitle>
           <CardDescription>
-            Löscht den Server, Container und alle zugehörigen Daten
-            unwiderruflich.
+            Deletes the server, container and all associated data permanently.
           </CardDescription>
         </CardHeader>
         <CardFooter>
@@ -339,15 +338,15 @@ export function SettingsTab({ server, projectKey }: SettingsTabProps) {
             <DialogTrigger asChild>
               <Button variant="destructive">
                 <Trash2 className="mr-1.5 h-4 w-4" />
-                Server löschen
+                Delete server
               </Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Server löschen</DialogTitle>
+                <DialogTitle>Delete server</DialogTitle>
                 <DialogDescription asChild>
                   <div className="space-y-2 text-sm text-zinc-500 dark:text-zinc-400">
-                    <p>Gib den Servernamen ein um den Server unwiderruflich zu löschen.</p>
+                    <p>Enter the server name to permanently delete the server.</p>
                     <div className="flex items-center gap-2 rounded-md border border-zinc-200 bg-zinc-50 px-3 py-1.5 dark:border-zinc-700 dark:bg-zinc-900">
                       <span className="flex-1 font-mono text-xs text-zinc-700 dark:text-zinc-300">{server.name}</span>
                       <button
@@ -355,7 +354,7 @@ export function SettingsTab({ server, projectKey }: SettingsTabProps) {
                         className="shrink-0 text-xs text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200"
                         onClick={() => { navigator.clipboard.writeText(server.name); setDeleteConfirm(server.name); }}
                       >
-                        Kopieren & einfügen
+                        Copy & paste
                       </button>
                     </div>
                   </div>
@@ -379,14 +378,14 @@ export function SettingsTab({ server, projectKey }: SettingsTabProps) {
                   onClick={() => setDeleteOpen(false)}
                   disabled={deleting}
                 >
-                  Abbrechen
+                  Cancel
                 </Button>
                 <Button
                   variant="destructive"
                   disabled={deleting || deleteConfirm.trim() !== server.name.trim() || deleteConfirm.length === 0}
                   onClick={handleDelete}
                 >
-                  {deleting ? "Lösche…" : "Endgültig löschen"}
+                  {deleting ? "Deleting…" : "Delete permanently"}
                 </Button>
               </DialogFooter>
             </DialogContent>

@@ -32,7 +32,7 @@ export default function JvmPresetSelector({
             const inRange = memory >= (preset.minRamMb ?? 0);
             const tooltipText =
               !inRange && preset.minRamMb
-                ? `Empfohlen ab ${preset.minRamMb >= 1024 ? `${preset.minRamMb / 1024} GB` : `${preset.minRamMb} MB`}`
+                ? `Recommended from ${preset.minRamMb >= 1024 ? `${preset.minRamMb / 1024} GB` : `${preset.minRamMb} MB`}`
                 : preset.description;
 
             return (

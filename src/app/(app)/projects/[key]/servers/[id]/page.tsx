@@ -76,7 +76,7 @@ export default async function ServerDetailPage({ params }: Props) {
       <div>
         <h1 className="text-2xl font-bold">{plain.name}</h1>
         <p className="text-sm text-zinc-500">
-          {plain.runtime} · {plain.identifier} · Port {plain.port}
+          Minecraft server · {plain.identifier} · Port {plain.port}
         </p>
       </div>
 

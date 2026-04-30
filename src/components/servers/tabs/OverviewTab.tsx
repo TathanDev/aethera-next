@@ -29,11 +29,11 @@ const STATUS_STYLES: Record<string, string> = {
 };
 
 const STATUS_LABELS: Record<string, string> = {
-  running: "Läuft",
-  stopped: "Gestoppt",
-  starting: "Startet…",
-  stopping: "Stoppt…",
-  error: "Fehler",
+  running: "Running",
+  stopped: "Stopped",
+  starting: "Starting…",
+  stopping: "Stopping…",
+  error: "Error",
 };
 
 export interface ServerPlain {
@@ -101,7 +101,7 @@ export function OverviewTab({ server }: OverviewTabProps) {
         if (isDone) {
           isRecreating.current = false;
           if (status === "error") {
-            toast.error("Server-Operation fehlgeschlagen");
+            toast.error("Server operation failed");
           }
           router.refresh();
         }
@@ -133,12 +133,12 @@ export function OverviewTab({ server }: OverviewTabProps) {
       const res = await fetch(`/api/servers/${server._id}/${path}`, { method: "POST" });
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
-        throw new Error((body as { error?: string }).error ?? "Aktion fehlgeschlagen");
+        throw new Error((body as { error?: string }).error ?? "Action failed");
       }
       toast.success(successMsg);
       // Polling (started above by the isTransitional effect) takes it from here.
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Fehler");
+      toast.error(err instanceof Error ? err.message : "Error");
       setLiveStatus(server.status);
       isRecreating.current = false;
     } finally {
@@ -159,10 +159,10 @@ export function OverviewTab({ server }: OverviewTabProps) {
   const info: { label: string; value: string; mono?: boolean }[] = [
     { label: "Runtime", value: server.runtime },
     { label: "Version", value: server.version ?? "latest", mono: true },
-    { label: "Mod-Loader", value: server.modLoader ?? "Vanilla" },
+    { label: "Mod loader", value: server.modLoader ?? "Vanilla" },
     { label: "Port", value: String(server.port), mono: true },
     {
-      label: "RCON Port",
+      label: "RCON port",
       value: server.rconPort ? String(server.rconPort) : "—",
       mono: true,
     },
@@ -189,22 +189,22 @@ export function OverviewTab({ server }: OverviewTabProps) {
           <Button
             size="sm"
             className="bg-emerald-600 text-white hover:bg-emerald-700"
-            onClick={() => handleAction("start", "Server wird gestartet", "starting")}
+            onClick={() => handleAction("start", "Server is starting", "starting")}
             disabled={isTransitional || !isStopped}
           >
             {spinnerOrIcon(Play, "start")}
-            Starten
+            Start
           </Button>
           <div className="inline-flex items-center rounded-md">
             <Button
               size="sm"
               variant="destructive"
               className="rounded-r-none"
-              onClick={() => handleAction("soft-stop", "Server wird gestoppt", "stopping")}
+              onClick={() => handleAction("soft-stop", "Server is stopping", "stopping")}
               disabled={isTransitional || !isRunning}
             >
               {spinnerOrIcon(Square, "soft-stop")}
-              Stoppen
+              Stop
             </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -219,10 +219,10 @@ export function OverviewTab({ server }: OverviewTabProps) {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem
-                  onClick={() => handleAction("stop", "Server wird entfernt", "stopping")}
+                  onClick={() => handleAction("stop", "Server is being removed", "stopping")}
                 >
                   <Trash2 className="mr-2 h-4 w-4" />
-                  Hardclose (Container löschen)
+                  Hard stop (delete container)
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -230,11 +230,11 @@ export function OverviewTab({ server }: OverviewTabProps) {
           <Button
             size="sm"
             className="bg-amber-500 text-white hover:bg-amber-600"
-            onClick={() => handleAction("recreate", "Server wird neu gestartet", "stopping", { recreate: true })}
+            onClick={() => handleAction("recreate", "Server is restarting", "stopping", { recreate: true })}
             disabled={isTransitional || !isRunning}
           >
             {spinnerOrIcon(RotateCcw, "recreate")}
-            Neustarten
+            Restart
           </Button>
         </div>
       </div>
@@ -281,7 +281,7 @@ export function OverviewTab({ server }: OverviewTabProps) {
             {server.containerStatus && (
               <div className="flex items-center gap-2 text-xs">
                 <span className="w-28 shrink-0 text-zinc-500">
-                  Container Status
+                  Container status
                 </span>
                 <span className="font-mono text-zinc-800 dark:text-zinc-200">
                   {server.containerStatus}

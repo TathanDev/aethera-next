@@ -81,25 +81,25 @@ function StatusBadge({ status }: { status?: string }) {
     case "pending":
       return (
         <Badge variant="outline" className="gap-1 text-yellow-600 border-yellow-300">
-          <Clock className="h-3 w-3" /> Wartend
+          <Clock className="h-3 w-3" /> Pending
         </Badge>
       );
     case "in_progress":
       return (
         <Badge variant="outline" className="gap-1 text-blue-600 border-blue-300">
-          <Loader2 className="h-3 w-3 animate-spin" /> Läuft…
+          <Loader2 className="h-3 w-3 animate-spin" /> Running…
         </Badge>
       );
     case "failed":
       return (
         <Badge variant="outline" className="gap-1 text-red-600 border-red-300">
-          <XCircle className="h-3 w-3" /> Fehlgeschlagen
+          <XCircle className="h-3 w-3" /> Failed
         </Badge>
       );
     default:
       return (
         <Badge variant="outline" className="gap-1 text-green-600 border-green-300">
-          <CheckCircle2 className="h-3 w-3" /> Fertig
+          <CheckCircle2 className="h-3 w-3" /> Done
         </Badge>
       );
   }
@@ -108,14 +108,14 @@ function StatusBadge({ status }: { status?: string }) {
 const BACKUP_COMPONENTS = [
   {
     id: "world" as const,
-    label: "Welten",
-    description: "Alle Weltdaten und Dimensionen",
+    label: "Worlds",
+    description: "All world data and dimensions",
     icon: Globe,
   },
   {
     id: "config" as const,
-    label: "Konfiguration",
-    description: "server.properties und Konfigurationsdateien",
+    label: "Configuration",
+    description: "server.properties and config files",
     icon: FileText,
   },
   {
@@ -133,7 +133,7 @@ const BACKUP_COMPONENTS = [
   {
     id: "datapacks" as const,
     label: "Datapacks",
-    description: "Benutzerdefinierte Datenpakete",
+    description: "Custom data packs",
     icon: Database,
   },
 ] as const;
@@ -160,7 +160,7 @@ export function ServerBackupsTab({ serverId, serverName }: { serverId: string; s
       if (!res.ok) throw new Error();
       setBackups(await res.json());
     } catch {
-      toast.error("Backups konnten nicht geladen werden");
+      toast.error("Backups could not be loaded");
     } finally {
       setLoading(false);
     }
@@ -206,20 +206,20 @@ export function ServerBackupsTab({ serverId, serverName }: { serverId: string; s
         if (!res.ok) throw new Error((await res.json()).error);
         const data = await res.json();
         if (data.strategy === "async") {
-          toast.success("Backup gestartet (async)");
+          toast.success("Backup started (async)");
         } else {
-          toast.success("Backup erstellt");
+          toast.success("Backup created");
         }
         fetchBackups();
       } catch (err) {
-        toast.error(err instanceof Error ? err.message : "Fehler beim Erstellen");
+        toast.error(err instanceof Error ? err.message : "Failed to create backup");
       }
     });
   }
 
   function handleCustomBackup() {
     if (selectedComponents.length === 0) {
-      toast.error("Wähle mindestens eine Komponente aus");
+      toast.error("Select at least one component");
       return;
     }
     setCustomDialogOpen(false);
@@ -250,10 +250,10 @@ export function ServerBackupsTab({ serverId, serverName }: { serverId: string; s
           { method: "DELETE" },
         );
         if (!res.ok) throw new Error();
-        toast.success("Backup gelöscht");
+        toast.success("Backup deleted");
         fetchBackups();
       } catch {
-        toast.error("Fehler beim Löschen");
+        toast.error("Failed to delete backup");
       }
     });
   }
@@ -267,14 +267,14 @@ export function ServerBackupsTab({ serverId, serverName }: { serverId: string; s
       const res = await fetch(url, { method: "POST" });
       if (!res.ok) throw new Error((await res.json()).error);
       const data = await res.json();
-      toast.success(force ? "Erneut geteilt" : "Share-Link erstellt");
+      toast.success(force ? "Reshared" : "Share link created");
       fetchBackups();
       if (data.shareUrl) {
         await copyToClipboard(data.shareUrl);
-        toast.info("Link in Zwischenablage kopiert");
+        toast.info("Link copied to clipboard");
       }
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Fehler beim Teilen");
+      toast.error(err instanceof Error ? err.message : "Failed to share");
     } finally {
       setSharingId(null);
     }
@@ -282,7 +282,7 @@ export function ServerBackupsTab({ serverId, serverName }: { serverId: string; s
 
   function copyShareUrl(url: string) {
     copyToClipboard(url);
-    toast.info("Link kopiert");
+    toast.info("Link copied");
   }
 
   const isCompleted = (b: Backup) => !b.status || b.status === "completed";
@@ -291,7 +291,7 @@ export function ServerBackupsTab({ serverId, serverName }: { serverId: string; s
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <p className="text-sm text-zinc-500">{backups.length} Backups</p>
+          <p className="text-sm text-zinc-500">{backups.length} backups</p>
           {capabilities?.async && (
             <Badge variant="secondary" className="text-xs">Async</Badge>
           )}
@@ -307,7 +307,7 @@ export function ServerBackupsTab({ serverId, serverName }: { serverId: string; s
             className="rounded-r-none"
           >
             <Plus className="mr-1.5 h-3.5 w-3.5" />
-            {isPending ? "Erstelle…" : "Backup erstellen"}
+            {isPending ? "Creating…" : "Create backup"}
           </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -327,11 +327,11 @@ export function ServerBackupsTab({ serverId, serverName }: { serverId: string; s
                 }}
               >
                 <Settings2 className="mr-2 h-4 w-4" />
-                Benutzerdefiniertes Backup
+                Custom backup
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => setImportDialogOpen(true)}>
                 <Upload className="mr-2 h-4 w-4" />
-                Backup importieren
+                Import backup
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -339,12 +339,12 @@ export function ServerBackupsTab({ serverId, serverName }: { serverId: string; s
       </div>
 
       {loading ? (
-        <p className="text-sm text-zinc-500">Lade Backups…</p>
+        <p className="text-sm text-zinc-500">Loading backups…</p>
       ) : backups.length === 0 ? (
         <Card>
           <CardContent className="py-8 text-center">
             <HardDrive className="mx-auto mb-2 h-8 w-8 text-zinc-400" />
-            <p className="text-sm text-zinc-500">Keine Backups vorhanden</p>
+            <p className="text-sm text-zinc-500">No backups available</p>
           </CardContent>
         </Card>
       ) : (
@@ -397,7 +397,7 @@ export function ServerBackupsTab({ serverId, serverName }: { serverId: string; s
                       size="icon"
                       disabled={sharingId === backup._id}
                       onClick={() => handleShare(backup._id)}
-                      title="Teilen (Paperview)"
+                      title="Share (Paperview)"
                     >
                       {sharingId === backup._id ? (
                         <Loader2 className="h-4 w-4 animate-spin" />
@@ -412,7 +412,7 @@ export function ServerBackupsTab({ serverId, serverName }: { serverId: string; s
                       size="icon"
                       disabled={sharingId === backup._id}
                       onClick={() => handleShare(backup._id, true)}
-                      title="Erneut teilen (Paperview)"
+                      title="Reshare (Paperview)"
                     >
                       {sharingId === backup._id ? (
                         <Loader2 className="h-4 w-4 animate-spin" />
@@ -427,7 +427,7 @@ export function ServerBackupsTab({ serverId, serverName }: { serverId: string; s
                       size="icon"
                       disabled={isPending}
                       onClick={() => handleRestore(backup)}
-                      title="Wiederherstellen"
+                      title="Restore"
                     >
                       <RotateCcw className="h-4 w-4" />
                     </Button>
@@ -437,7 +437,7 @@ export function ServerBackupsTab({ serverId, serverName }: { serverId: string; s
                     size="icon"
                     disabled={isPending}
                     onClick={() => handleDelete(backup._id)}
-                    title="Löschen"
+                    title="Delete"
                   >
                     <Trash2 className="h-4 w-4 text-zinc-400 hover:text-red-500" />
                   </Button>
@@ -452,16 +452,16 @@ export function ServerBackupsTab({ serverId, serverName }: { serverId: string; s
       <Dialog open={customDialogOpen} onOpenChange={setCustomDialogOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Benutzerdefiniertes Backup</DialogTitle>
+            <DialogTitle>Custom backup</DialogTitle>
             <DialogDescription>
-              Wähle aus, welche Komponenten gesichert werden sollen.
+              Choose which components should be included in the backup.
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-1 py-2">
             <div className="flex items-center justify-between pb-2 mb-2 border-b border-zinc-200 dark:border-zinc-800">
               <Label className="text-sm font-medium cursor-pointer" onClick={toggleAll}>
-                Alle auswählen
+                Select all
               </Label>
               <Checkbox
                 checked={selectedComponents.length === ALL_COMPONENT_IDS.length}
@@ -505,7 +505,7 @@ export function ServerBackupsTab({ serverId, serverName }: { serverId: string; s
 
           <DialogFooter>
             <Button variant="outline" onClick={() => setCustomDialogOpen(false)}>
-              Abbrechen
+              Cancel
             </Button>
             <Button
               onClick={handleCustomBackup}
@@ -514,14 +514,14 @@ export function ServerBackupsTab({ serverId, serverName }: { serverId: string; s
               {isPending ? (
                 <>
                   <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
-                  Erstelle…
+                  Creating…
                 </>
               ) : (
                 <>
                   <Plus className="mr-1.5 h-3.5 w-3.5" />
                   {selectedComponents.length === ALL_COMPONENT_IDS.length
-                    ? "Vollständiges Backup"
-                    : `${selectedComponents.length} ${selectedComponents.length === 1 ? "Komponente" : "Komponenten"} sichern`}
+                    ? "Full backup"
+                    : `Back up ${selectedComponents.length} ${selectedComponents.length === 1 ? "component" : "components"}`}
                 </>
               )}
             </Button>

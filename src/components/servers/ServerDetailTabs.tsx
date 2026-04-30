@@ -48,16 +48,16 @@ export function ServerDetailTabs({ server, projectKey, isOwner, userPermissions 
   const can = (perm: string) => isOwner || userPermissions.includes(perm);
 
   const tabs = [
-    { value: "overview",  label: "Übersicht",    show: true },
-    { value: "console",   label: "Konsole",       show: can("server.console") },
+    { value: "overview",  label: "Overview",      show: true },
+    { value: "console",   label: "Console",       show: can("server.console") },
     { value: "logs",      label: "Logs",          show: true },
-    { value: "files",     label: "Dateien",       show: can("server.files") },
+    { value: "files",     label: "Files",         show: can("server.files") },
     { value: "addons",    label: "Mods/Plugins",  show: can("server.files") },
     { value: "backups",   label: "Backups",       show: can("server.backups") },
-    { value: "config",    label: "Konfiguration", show: can("server.settings") },
+    { value: "config",    label: "Configuration", show: can("server.settings") },
     { value: "discord",   label: "Discord",       show: can("server.settings") },
-    { value: "access",    label: "Zugriff",       show: can("server.settings") },
-    { value: "settings",  label: "Einstellungen", show: can("server.settings") },
+    { value: "access",    label: "Access",        show: can("server.settings") },
+    { value: "settings",  label: "Settings",      show: can("server.settings") },
   ].filter((t) => t.show);
 
   const visibleValues = new Set(tabs.map((t) => t.value));

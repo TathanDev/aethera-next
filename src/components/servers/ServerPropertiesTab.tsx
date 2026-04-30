@@ -18,7 +18,7 @@ export function ServerPropertiesTab({ serverId }: { serverId: string }) {
   useEffect(() => {
     readPropertiesAction({ serverId })
       .then(setProperties)
-      .catch(() => toast.error("Eigenschaften konnten nicht geladen werden"))
+      .catch(() => toast.error("Properties could not be loaded"))
       .finally(() => setLoading(false));
   }, [serverId]);
 
@@ -30,15 +30,15 @@ export function ServerPropertiesTab({ serverId }: { serverId: string }) {
     startTransition(async () => {
       try {
         await writePropertiesAction({ serverId, properties });
-        toast.success("Eigenschaften gespeichert");
+        toast.success("Properties saved");
       } catch (err) {
-        toast.error(err instanceof Error ? err.message : "Fehler beim Speichern");
+        toast.error(err instanceof Error ? err.message : "Failed to save");
       }
     });
   }
 
   if (loading) {
-    return <p className="text-sm text-zinc-500">Lade Eigenschaften…</p>;
+    return <p className="text-sm text-zinc-500">Loading properties…</p>;
   }
 
   const entries = Object.entries(properties).sort(([a], [b]) =>
@@ -49,11 +49,11 @@ export function ServerPropertiesTab({ serverId }: { serverId: string }) {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <p className="text-sm text-zinc-500">
-          {entries.length} Eigenschaften
+          {entries.length} properties
         </p>
         <Button onClick={handleSave} disabled={isPending} size="sm">
           <Save className="mr-1.5 h-3.5 w-3.5" />
-          {isPending ? "Speichere…" : "Speichern"}
+          {isPending ? "Saving…" : "Save"}
         </Button>
       </div>
 
@@ -62,10 +62,10 @@ export function ServerPropertiesTab({ serverId }: { serverId: string }) {
           <thead>
             <tr className="border-b border-zinc-200 bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900">
               <th className="px-3 py-2 text-left font-medium text-zinc-500">
-                Schlüssel
+                Key
               </th>
               <th className="px-3 py-2 text-left font-medium text-zinc-500">
-                Wert
+                Value
               </th>
             </tr>
           </thead>

@@ -11,18 +11,18 @@ export function FileDeleteButton({ fileId }: { fileId: string }) {
   const [deleting, setDeleting] = useState(false);
 
   async function handleDelete() {
-    if (!confirm("Datei wirklich löschen?")) return;
+    if (!confirm("Delete this file?")) return;
     setDeleting(true);
     try {
       const res = await fetch(`/api/files/${fileId}`, { method: "DELETE" });
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
-        throw new Error(body.error ?? "Fehler beim Löschen");
+        throw new Error(body.error ?? "Failed to delete");
       }
-      toast.success("Datei gelöscht");
+      toast.success("File deleted");
       router.refresh();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Fehler beim Löschen");
+      toast.error(err instanceof Error ? err.message : "Failed to delete");
       setDeleting(false);
     }
   }

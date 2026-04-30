@@ -32,7 +32,7 @@ import {
 } from "@/app/(app)/actions/servers";
 
 const settingsSchema = z.object({
-  memory: z.number().min(512, "Mindestens 512 MB").max(32768),
+  memory: z.number().min(512, "At least 512 MB").max(32768),
   port: z.number().min(1024).max(65535),
   rconPort: z.number().min(1024).max(65535).optional(),
   version: z.string().optional(),
@@ -90,9 +90,9 @@ export function ServerSettingsTab({
           serverId,
           patch: { ...data, modLoader, javaVersion },
         });
-        toast.success("Einstellungen gespeichert");
+        toast.success("Settings saved");
       } catch (err) {
-        toast.error(err instanceof Error ? err.message : "Fehler beim Speichern");
+        toast.error(err instanceof Error ? err.message : "Failed to save");
       }
     });
   }
@@ -102,10 +102,10 @@ export function ServerSettingsTab({
     startTransition(async () => {
       try {
         await deleteServerAction({ serverId });
-        toast.success("Server gelöscht");
+        toast.success("Server deleted");
         router.push(`/projects/${projectKey}`);
       } catch (err) {
-        toast.error(err instanceof Error ? err.message : "Fehler beim Löschen");
+        toast.error(err instanceof Error ? err.message : "Failed to delete");
       }
     });
   }
@@ -118,9 +118,9 @@ export function ServerSettingsTab({
       <Card>
         <form onSubmit={handleSubmit(onSave)}>
           <CardHeader>
-            <CardTitle className="text-base">Server-Konfiguration</CardTitle>
+            <CardTitle className="text-base">Server configuration</CardTitle>
             <CardDescription>
-              Server muss gestoppt sein um Änderungen zu übernehmen.
+              The server must be stopped to apply changes.
             </CardDescription>
           </CardHeader>
           <CardContent className="grid gap-4 sm:grid-cols-2">
@@ -147,7 +147,7 @@ export function ServerSettingsTab({
               <Input id="version" placeholder="latest" {...register("version")} />
             </div>
             <div className="space-y-1">
-              <Label>Java-Version</Label>
+              <Label>Java version</Label>
               <Select value={javaVersion} onValueChange={setJavaVersion}>
                 <SelectTrigger>
                   <SelectValue />
@@ -162,7 +162,7 @@ export function ServerSettingsTab({
               </Select>
             </div>
             <div className="space-y-1">
-              <Label>Mod-Loader</Label>
+              <Label>Mod loader</Label>
               <Select value={modLoader} onValueChange={setModLoader}>
                 <SelectTrigger>
                   <SelectValue />
@@ -177,7 +177,7 @@ export function ServerSettingsTab({
               </Select>
             </div>
             <div className="space-y-1 sm:col-span-2">
-              <Label htmlFor="javaArgs">Java Argumente</Label>
+              <Label htmlFor="javaArgs">Java arguments</Label>
               <Input
                 id="javaArgs"
                 placeholder="-XX:+UseG1GC"
@@ -189,7 +189,7 @@ export function ServerSettingsTab({
           <CardFooter>
             <Button type="submit" disabled={isPending}>
               <Save className="mr-1.5 h-4 w-4" />
-              {isPending ? "Speichere…" : "Speichern"}
+              {isPending ? "Saving…" : "Save"}
             </Button>
           </CardFooter>
         </form>
@@ -200,11 +200,10 @@ export function ServerSettingsTab({
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base text-red-600 dark:text-red-400">
             <AlertTriangle className="h-4 w-4" />
-            Gefahrenzone
+            Danger zone
           </CardTitle>
           <CardDescription>
-            Gib den Servernamen &quot;{serverName}&quot; ein um den Server
-            unwiderruflich zu löschen.
+            Enter the server name &quot;{serverName}&quot; to permanently delete the server.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -221,7 +220,7 @@ export function ServerSettingsTab({
             onClick={handleDelete}
           >
             <Trash2 className="mr-1.5 h-4 w-4" />
-            Server löschen
+            Delete server
           </Button>
         </CardFooter>
       </Card>

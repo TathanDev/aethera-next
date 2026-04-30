@@ -70,10 +70,10 @@ export function ConsoleTab({ serverId, serverStatus }: ConsoleTabProps) {
       });
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
-        toast.error(body.error ?? "Befehl konnte nicht gesendet werden");
+        toast.error(body.error ?? "Command could not be sent");
       }
     } catch {
-      toast.error("Netzwerkfehler beim Senden des Befehls");
+      toast.error("Network error while sending command");
     }
   }
 
@@ -82,7 +82,7 @@ export function ConsoleTab({ serverId, serverStatus }: ConsoleTabProps) {
       {/* Toolbar */}
       <div className="flex items-center justify-between">
         <span className="text-sm text-zinc-500">
-          {lines.length} Zeilen
+          {lines.length} lines
         </span>
         <Button
           variant="outline"
@@ -94,7 +94,7 @@ export function ConsoleTab({ serverId, serverStatus }: ConsoleTabProps) {
           disabled={loading}
         >
           <RefreshCw className={cn("mr-1.5 h-3.5 w-3.5", loading && "animate-spin")} />
-          Logs laden
+          Reload logs
         </Button>
       </div>
 
@@ -105,7 +105,7 @@ export function ConsoleTab({ serverId, serverStatus }: ConsoleTabProps) {
       >
         {lines.length === 0 ? (
           <span className="text-zinc-500">
-            {loading ? "Lade Logs…" : "Keine Logs verfügbar"}
+            {loading ? "Loading logs…" : "No logs available"}
           </span>
         ) : (
           lines.map((line, i) => (
@@ -136,7 +136,7 @@ export function ConsoleTab({ serverId, serverStatus }: ConsoleTabProps) {
           value={command}
           onChange={(e) => setCommand(e.target.value)}
           placeholder={
-            isRunning ? "Befehl eingeben…" : "Server muss laufen"
+            isRunning ? "Enter command…" : "Server must be running"
           }
           className="font-mono"
           disabled={!isRunning}

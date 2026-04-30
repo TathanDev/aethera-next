@@ -30,8 +30,8 @@ import {
 } from "@/app/(app)/actions/servers";
 
 const configSchema = z.object({
-  motd: z.string().max(59, "Maximal 59 Zeichen"),
-  "max-players": z.number().min(1, "Mindestens 1").max(1000, "Maximal 1000"),
+  motd: z.string().max(59, "Maximum 59 characters"),
+  "max-players": z.number().min(1, "At least 1").max(1000, "Maximum 1000"),
   difficulty: z.enum(["peaceful", "easy", "normal", "hard"]),
   "white-list": z.boolean(),
   pvp: z.boolean(),
@@ -104,7 +104,7 @@ export function ConfigurationTab({ serverId, serverStatus }: ConfigurationTabPro
         });
       })
       .catch(() => {
-        if (!cancelled) toast.error("Konfiguration konnte nicht geladen werden");
+        if (!cancelled) toast.error("Configuration could not be loaded");
       })
       .finally(() => {
         if (!cancelled) setLoading(false);
@@ -132,22 +132,22 @@ export function ConfigurationTab({ serverId, serverStatus }: ConfigurationTabPro
 
         await writePropertiesAction({ serverId, properties: merged });
         setRawProperties(merged);
-        toast.success("Konfiguration gespeichert");
+        toast.success("Configuration saved");
       } catch (err) {
-        toast.error(err instanceof Error ? err.message : "Fehler beim Speichern");
+        toast.error(err instanceof Error ? err.message : "Failed to save");
       }
     });
   }
 
   if (loading) {
-    return <p className="text-sm text-zinc-500">Lade Konfiguration…</p>;
+    return <p className="text-sm text-zinc-500">Loading configuration…</p>;
   }
 
   return (
     <div className="space-y-6">
       {!editable && (
         <div className="rounded-md border border-amber-200 bg-amber-50 p-3 text-sm text-amber-700 dark:border-amber-900/50 dark:bg-amber-900/20 dark:text-amber-400">
-          Server muss gestoppt sein um die Konfiguration zu bearbeiten.
+          The server must be stopped to edit the configuration.
         </div>
       )}
 
@@ -174,7 +174,7 @@ export function ConfigurationTab({ serverId, serverStatus }: ConfigurationTabPro
 
             {/* Max Players */}
             <div className="space-y-1">
-              <Label htmlFor="cfg-maxplayers">Max. Spieler</Label>
+              <Label htmlFor="cfg-maxplayers">Max players</Label>
               <Input
                 id="cfg-maxplayers"
                 type="number"
@@ -190,7 +190,7 @@ export function ConfigurationTab({ serverId, serverStatus }: ConfigurationTabPro
 
             {/* Difficulty */}
             <div className="space-y-1">
-              <Label>Schwierigkeitsgrad</Label>
+              <Label>Difficulty</Label>
               <Controller
                 name="difficulty"
                 control={control}
@@ -204,10 +204,10 @@ export function ConfigurationTab({ serverId, serverStatus }: ConfigurationTabPro
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="peaceful">Friedlich</SelectItem>
-                      <SelectItem value="easy">Einfach</SelectItem>
+                      <SelectItem value="peaceful">Peaceful</SelectItem>
+                      <SelectItem value="easy">Easy</SelectItem>
                       <SelectItem value="normal">Normal</SelectItem>
-                      <SelectItem value="hard">Schwer</SelectItem>
+                      <SelectItem value="hard">Hard</SelectItem>
                     </SelectContent>
                   </Select>
                 )}
@@ -216,7 +216,7 @@ export function ConfigurationTab({ serverId, serverStatus }: ConfigurationTabPro
 
             {/* Spawn Protection */}
             <div className="space-y-1">
-              <Label htmlFor="cfg-spawn">Spawn-Schutz (Blöcke)</Label>
+              <Label htmlFor="cfg-spawn">Spawn protection (blocks)</Label>
               <Input
                 id="cfg-spawn"
                 type="number"
@@ -229,10 +229,10 @@ export function ConfigurationTab({ serverId, serverStatus }: ConfigurationTabPro
 
             {/* Level Seed */}
             <div className="space-y-1">
-              <Label htmlFor="cfg-seed">World-Seed</Label>
+              <Label htmlFor="cfg-seed">World seed</Label>
               <Input
                 id="cfg-seed"
-                placeholder="Leer = zufällig"
+                placeholder="Leave empty for random"
                 className="font-mono"
                 disabled={!editable}
                 {...register("level-seed")}
@@ -243,11 +243,11 @@ export function ConfigurationTab({ serverId, serverStatus }: ConfigurationTabPro
             <div className="space-y-3 sm:col-span-2">
               {(
                 [
-                  { name: "white-list", label: "Whitelist aktivieren" },
-                  { name: "pvp", label: "PvP aktivieren" },
-                  { name: "online-mode", label: "Online-Modus (Authentifizierung)" },
-                  { name: "enable-command-blocks", label: "Command Blocks aktivieren" },
-                  { name: "hardcore", label: "Hardcore-Modus" },
+                  { name: "white-list", label: "Enable whitelist" },
+                  { name: "pvp", label: "Enable PvP" },
+                  { name: "online-mode", label: "Online mode (authentication)" },
+                  { name: "enable-command-blocks", label: "Enable command blocks" },
+                  { name: "hardcore", label: "Hardcore mode" },
                 ] as const
               ).map(({ name, label }) => (
                 <div key={name} className="flex items-center gap-3">
@@ -272,7 +272,7 @@ export function ConfigurationTab({ serverId, serverStatus }: ConfigurationTabPro
           <CardFooter>
             <Button type="submit" disabled={isPending || !editable}>
               <Save className="mr-1.5 h-4 w-4" />
-              {isPending ? "Speichere…" : "Speichern"}
+              {isPending ? "Saving…" : "Save"}
             </Button>
           </CardFooter>
         </form>

@@ -12,7 +12,7 @@ function formatBytes(bytes: number): string {
 }
 
 function formatDate(date: Date | string): string {
-  return new Date(date).toLocaleString("de-DE", {
+  return new Date(date).toLocaleString("en-GB", {
     day: "2-digit",
     month: "2-digit",
     year: "numeric",
@@ -35,22 +35,22 @@ export default async function DateienPage() {
             </Link>
           </Button>
           <div>
-            <h1 className="text-2xl font-bold">Dateien</h1>
+            <h1 className="text-2xl font-bold">Files</h1>
             <p className="text-sm text-zinc-500">
               {files.length === 0
-                ? "Keine Dateien vorhanden"
-                : `${files.length} Datei${files.length !== 1 ? "en" : ""}`}
+                ? "No files available"
+                : `${files.length} file${files.length !== 1 ? "s" : ""}`}
             </p>
           </div>
         </div>
         <Button asChild size="sm">
-          <Link href="/verzeichnis/upload">Hochladen</Link>
+          <Link href="/verzeichnis/upload">Upload</Link>
         </Button>
       </div>
 
       {files.length === 0 ? (
         <div className="rounded-lg border border-dashed border-zinc-300 py-16 text-center text-sm text-zinc-500 dark:border-zinc-700">
-          Noch keine Dateien hochgeladen.
+          No files uploaded yet.
         </div>
       ) : (
         <div className="overflow-hidden rounded-md border border-zinc-200 dark:border-zinc-800">
@@ -64,16 +64,16 @@ export default async function DateienPage() {
                   Identifier
                 </th>
                 <th className="px-4 py-2.5 text-right font-medium text-zinc-500">
-                  Größe
+                  Size
                 </th>
                 <th className="px-4 py-2.5 text-left font-medium text-zinc-500">
-                  Erstellt
+                  Created
                 </th>
                 <th className="px-4 py-2.5 text-left font-medium text-zinc-500">
-                  Ablauf
+                  Expires
                 </th>
                 <th className="px-4 py-2.5 text-right font-medium text-zinc-500">
-                  Aktionen
+                  Actions
                 </th>
               </tr>
             </thead>

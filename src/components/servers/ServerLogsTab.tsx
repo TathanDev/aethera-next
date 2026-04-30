@@ -29,7 +29,7 @@ export function ServerLogsTab({ serverId }: { serverId: string }) {
   }
 
   const filters: { label: string; value: StreamFilter }[] = [
-    { label: "Alle", value: "all" },
+    { label: "All", value: "all" },
     { label: "stdout", value: "stdout" },
     { label: "stderr", value: "stderr" },
   ];
@@ -46,7 +46,7 @@ export function ServerLogsTab({ serverId }: { serverId: string }) {
             )}
           />
           <span className="text-sm text-zinc-500">
-            {filtered.length} Zeilen
+            {filtered.length} lines
           </span>
           {error && <span className="text-sm text-red-500">— {error}</span>}
         </div>
@@ -62,7 +62,7 @@ export function ServerLogsTab({ serverId }: { serverId: string }) {
             </Button>
           ))}
           <Button variant="ghost" size="sm" onClick={clear}>
-            Leeren
+            Clear
           </Button>
         </div>
       </div>
@@ -98,7 +98,7 @@ export function ServerLogsTab({ serverId }: { serverId: string }) {
             scrollRef.current?.scrollTo(0, scrollRef.current.scrollHeight);
           }}
         >
-          ↓ Zum Ende scrollen
+          ↓ Scroll to end
         </button>
       )}
     </div>

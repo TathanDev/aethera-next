@@ -40,14 +40,14 @@ export function ServerConsoleTab({ serverId }: { serverId: string }) {
             )}
           />
           <span className="text-sm text-zinc-500">
-            {connected ? "Verbunden" : "Getrennt"}
+            {connected ? "Connected" : "Disconnected"}
           </span>
           {error && (
             <span className="text-sm text-red-500">— {error}</span>
           )}
         </div>
         <Button variant="ghost" size="sm" onClick={clear}>
-          Leeren
+          Clear
         </Button>
       </div>
 
@@ -80,7 +80,7 @@ export function ServerConsoleTab({ serverId }: { serverId: string }) {
         <Input
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Befehl eingeben…"
+          placeholder="Enter command…"
           className="font-mono"
           disabled={!connected}
         />
