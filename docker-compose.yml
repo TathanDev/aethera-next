@@ -1,52 +1,45 @@
 services:
   app:
     build: .
-    container_name: aethera-app
     restart: unless-stopped
     ports:
-      - "${APP_PORT:-3000}:3000"
-    env_file: .env
+      - "3000:3000"
     environment:
-      - MONGODB_URI=mongodb://${MONGO_USER:-aethera}:${MONGO_PASS}@mongo:27017/aethera?authSource=admin
+      MONGODB_URI:
+      AETHERA_DATA_DIR: /app/.aethera/run
+      AETHERA_BACKUP_DIR: /app/.aethera/backup
+      AETHERA_WORLD_UPLOAD_DIR: /app/.aethera/world_upload
     volumes:
       # Docker socket — required for container orchestration
       - /var/run/docker.sock:/var/run/docker.sock
-      # Server data directories (must match inside & outside the container)
-      - ${AETHERA_DATA_DIR:-/app/.aethera/run}:${AETHERA_DATA_DIR:-/app/.aethera/run}
-      - ${AETHERA_BACKUP_DIR:-/app/.aethera/backup}:${AETHERA_BACKUP_DIR:-/app/.aethera/backup}
-      - ${AETHERA_WORLD_UPLOAD_DIR:-/app/.aethera/world_upload}:${AETHERA_WORLD_UPLOAD_DIR:-/app/.aethera/world_upload}
-    mem_limit: ${APP_MEM_LIMIT:-1g}
-    memswap_limit: ${APP_MEM_LIMIT:-1g}
+      # Persistent storage managed by Coolify/Docker volumes
+      - aethera-run:/app/.aethera/run
+      - aethera-backup:/app/.aethera/backup
+      - aethera-world-upload:/app/.aethera/world_upload
+    mem_limit: 1g
+    memswap_limit: 1g
     depends_on:
-      mongo:
-        condition: service_healthy
+      - mongo
     networks:
       - aethera-net
 
   mongo:
     image: mongo:7
-    container_name: aethera-mongo
     restart: unless-stopped
-    ports:
-      - "127.0.0.1:${MONGO_PORT:-27017}:27017"
     environment:
-      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER:-aethera}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASS}
+      MONGO_INITDB_ROOT_USERNAME:
+      MONGO_INITDB_ROOT_PASSWORD:
     volumes:
       - mongo-data:/data/db
-    mem_limit: ${MONGO_MEM_LIMIT:-512m}
-    memswap_limit: ${MONGO_MEM_LIMIT:-512m}
-    healthcheck:
-      test: >-
-        mongosh -u "$$MONGO_INITDB_ROOT_USERNAME" -p "$$MONGO_INITDB_ROOT_PASSWORD" --authenticationDatabase admin --quiet --eval "db.adminCommand('ping')"
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 30s
+    mem_limit: 512m
+    memswap_limit: 512m
     networks:
       - aethera-net
 
 volumes:
+  aethera-run:
+  aethera-backup:
+  aethera-world-upload:
   mongo-data:
 
 networks:
